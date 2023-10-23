@@ -35,9 +35,25 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/:brand", async (req, res) => {
+      const cursor = productCollection.find({ brand: `${req.params.brand}` });
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
+    app.get("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.send(result);
+    });
 
-
+    app.get("/details/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.send(result);
+    });
 
     app.post("/addProduct", async (req, res) => {
       const newProduct = req.body;
@@ -46,8 +62,32 @@ async function run() {
       res.send(result);
     });
 
+    app.put("product/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateProduct = req.body;
+      const product = {
+        $set: {
+          name: updateProduct.name,
+          brand: updateProduct.brand,
+          type: updateProduct.type,
+          price: updateProduct.price,
+          image: updateProduct.image,
+          description: updateProduct.description,
+          rating: updateProduct.rating,
+        },
+      };
+      const result = await productCollection.updateOne(
+        filter,
+        product,
+        options
+      );
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
