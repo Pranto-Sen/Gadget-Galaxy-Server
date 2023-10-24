@@ -62,10 +62,10 @@ async function run() {
       res.send(result);
     });
 
-    app.put("product/:id", async (req, res) => {
+    app.put("/product/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
-      const options = { upsert: true };
+      // const options = { upsert: true };
       const updateProduct = req.body;
       const product = {
         $set: {
@@ -80,11 +80,14 @@ async function run() {
       };
       const result = await productCollection.updateOne(
         filter,
-        product,
-        options
+        product
       );
+
       res.send(result);
     });
+
+
+    
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
